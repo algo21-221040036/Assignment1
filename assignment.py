@@ -17,18 +17,59 @@ etf_ = pd.DataFrame((etf.values-etf.mean(axis=1).values.reshape(-1,1))/etf.mean(
 etf_price_values = etf_price.values
 
 #找到局部最小值和局部最大值，最大值和最小值一定是交替的
-l=[]
-for i in range(1,len(etf_price_values)-1):
-    if etf_price_values[i] > etf_price_values[i-1] and etf_price_values[i] > etf_price_values[i+1]:
-        l.append(etf_price_values[i])
-    elif etf_price_values[i] < etf_price_values[i-1] and etf_price_values[i] < etf_price_values[i+1]:
-        l.append(etf_price_values[i])
-l = np.array(l)
+n = len(etf_price_values)
+cid = 0 #当前点的方向
+fpn = 0 #第一个点的索引
+highIndex = 0 #波峰点的索引
+lowIndex = 0 #波谷点的索引
+for i in range(n):
+    if etf_price_values[i] > etf_price_values[0] * (1+0.15):
+        cid = 1
+        fpn = i
+        highIndex = i
+        break
+    if etf_price_values[i] < etf_price_values[0] * (1-0.15):
+        cid = -1
+        fpn = i
+        lowIndex = i
+        break
+fcid = cid #第一个点的方向
+high=[]#波峰点的索引集合
+low=[]#波谷点的索引集合
+for i in range(fpn+1,n):
+    if cid > 0:
+        if etf_price_values[i] > etf_price_values[highIndex]:
+            highIndex = i
+        if etf_price_values[i] < etf_price_values[highIndex] * (1-0.15):
+            high.append(highIndex)
+            lowIndex = i
+            cid = -1
+    if cid < 0:
+        if etf_price_values[i] < etf_price_values[lowIndex]:
+            lowIndex = i
+        if etf_price_values[i] > etf_price_values[lowIndex] * (1+0.15):
+            low.append(lowIndex)
+            highIndex = i
+            cid = 1
+peakIndex = []
+peakIndex.extend(low)
+peakIndex.extend(high)
+peakIndex.append(0-1)
+peakIndex.append(n)
+peakIndex.sort()
+label = []
 
-del_values_index=[]
-for i in range(1,len(l)-1):
-    if np.abs((l[i]-l[i-1])/l[i-1]) < 0.15 and np.abs((l[i]-l[i+1])/l[i]) < 0.15:
-        if np.abs((l[i]-l[i-1])/l[i-1]) < 0.15:
-            del_values_index.extend([i-1,i])
-        elif np.abs((l[i]-l[i+1])/l[i]) < 0.15:  
-            del_values_index.extend([i+1,i])    
+def isin(a,l):
+    result = False
+    for i in l:
+        if i == a:
+            result = True
+            break
+    return result
+
+for i in range(n):
+    if isin(i,peakIndex) == True:
+        label.append(0)
+        fcid = fcid * (-1)
+    else:
+        label.append(fcid)
