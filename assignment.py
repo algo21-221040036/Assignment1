@@ -3,14 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 etf = pd.read_csv(r'.\zz500etf.csv',index_col=0,parse_dates=True)
-etf_price = etf.iloc[:,0]
+
 
 #做维度扩张，扩张长度是11天
 for i in range(1,12):
     etf = pd.concat([etf,etf.iloc[:,0].shift(i)],axis=1)
 
 etf = etf.dropna()
-
+etf_price = etf.iloc[:,0]
 #做论文中提及的标准化方法
 etf_ = pd.DataFrame((etf.values-etf.mean(axis=1).values.reshape(-1,1))/etf.mean(axis=1).values.reshape(-1,1)
                     ,index=etf.index,columns=etf.columns)
@@ -84,8 +84,8 @@ sellReturn = etf_price.pct_change()
 backDay = 252
 predictLabel=[]
 for i in range(backDay,len(etf_)):
-    lr.fit(etf_.iloc[(i-backDay):(i-1),0:-2],etf_.iloc[(i-backDay):(i-1),-1].astype('int'))
-    predictLabel.append(lr.predict(etf_.iloc[[i],0:-2]))
+    lr.fit(etf_.iloc[(i-backDay):(i-1),:],label[(i-backDay):(i-1)])
+    predictLabel.append(lr.predict(etf_.iloc[[i],:]))
 predictLabel = np.array(predictLabel)
-plt.plot((etf_.index[backDay:len(etf_)],(predictLabel.reshape(-1,)*sellReturn.values[backDay:len(etf_)])+1).cumprod())
+plt.plot(etf_.index[backDay:len(etf_)],((predictLabel.reshape(-1,)*sellReturn.values[backDay:len(etf_)])+1).cumprod())
 plt.show()
