@@ -87,5 +87,48 @@ for i in range(backDay,len(etf_)):
     lr.fit(etf_.iloc[(i-backDay):(i-1),:],label[(i-backDay):(i-1)])
     predictLabel.append(lr.predict(etf_.iloc[[i],:]))
 predictLabel = np.array(predictLabel)
+plt.title('LogisticRegression cum_return')
+plt.plot(etf_.index[backDay:len(etf_)],((predictLabel.reshape(-1,)*sellReturn.values[backDay:len(etf_)])+1).cumprod())
+plt.show()
+
+#随机森林
+from sklearn.ensemble import RandomForestClassifier as RF
+rf = RF(max_depth=10)
+sellReturn = etf_price.pct_change()
+backDay = 252
+predictLabel=[]
+for i in range(backDay,len(etf_)):
+    rf.fit(etf_.iloc[(i-backDay):(i-1),:],label[(i-backDay):(i-1)])
+    predictLabel.append(rf.predict(etf_.iloc[[i],:]))
+predictLabel = np.array(predictLabel)
+plt.title('RandomForest cum_return')
+plt.plot(etf_.index[backDay:len(etf_)],((predictLabel.reshape(-1,)*sellReturn.values[backDay:len(etf_)])+1).cumprod())
+plt.show()
+
+#KNN
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=20)
+sellReturn = etf_price.pct_change()
+backDay = 252
+predictLabel=[]
+for i in range(backDay,len(etf_)):
+    knn.fit(etf_.iloc[(i-backDay):(i-1),:],label[(i-backDay):(i-1)])
+    predictLabel.append(knn.predict(etf_.iloc[[i],:]))
+predictLabel = np.array(predictLabel)
+plt.title('KNN cum_return')
+plt.plot(etf_.index[backDay:len(etf_)],((predictLabel.reshape(-1,)*sellReturn.values[backDay:len(etf_)])+1).cumprod())
+plt.show()
+
+#支持向量机
+from sklearn.svm import SVC
+svc = SVC(kernel = "rbf",gamma=2,C=2)
+sellReturn = etf_price.pct_change()
+backDay = 252
+predictLabel=[]
+for i in range(backDay,len(etf_)):
+    svc.fit(etf_.iloc[(i-backDay):(i-1),:],label[(i-backDay):(i-1)])
+    predictLabel.append(svc.predict(etf_.iloc[[i],:]))
+predictLabel = np.array(predictLabel)
+plt.title('SVC cum_return')
 plt.plot(etf_.index[backDay:len(etf_)],((predictLabel.reshape(-1,)*sellReturn.values[backDay:len(etf_)])+1).cumprod())
 plt.show()
