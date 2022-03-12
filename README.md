@@ -1,12 +1,12 @@
-# 一.文章综述
+# 一.Article Summary
 
-​	论文标题为《A Labeling Method for Financial Time Series Prediction Based on Trends》，网页链接为https://www.mdpi.com/1099-4300/22/10/1162。
+​	The title of the paper is "A Labeling Method for Financial Time Series Prediction Based on Trends", and the web link is https://www.mdpi.com/1099-4300/22/10/1162.
 
-​	本论文首先提出对每日收盘价做维度扩张，然后用新的方法做标准化。用这个新的方法做标准化的好处是可以防止用到未来信息。接着用新的方法对未来的涨跌做标记，之前都是直接用下一天和当天的价格作比较，这样做的问题是会对小幅波动的噪音很敏感，所以应该直接判断该点是否在一个上升或者下降的波段上。最后对标记好的数据用机器学习训练。
+​	This paper first proposes a dimension expansion of the daily closing price, and then uses a new method to standardize it. The benefit of normalizing with this new method is that it prevents future information from being used. Then use a new method to mark future ups and downs. Previously, the price of the next day and the price of the current day were directly used for comparison. The problem with this is that it is very sensitive to the noise of small fluctuations, so it should be directly judged whether the point is in a on rising or falling bands. Finally, machine learning is used to train the labeled data.
 
-# 二.复现方法
+# 二.Reproduce method
 
-## 1.准备
+## 1.Prepare
 
 numpy : 1.20.3
 
@@ -14,13 +14,13 @@ pandas : 1.3.4
 
 sklearn : 0.24.2
 
-选用中证500etf从2014年到2021年的收盘价，数据来源于米筐。
+Select the closing price of CSI 500etf from 2014 to 2021, and the data comes from Mikuang.
 
-## 2.结果
+## 2.Result
 
-文中将整个数据集分成训练集和测试集，我用每日的一年回看周期的数据做训练然后预测当天的。用了随机森林、KNN、SVM和逻辑回归做测试，随机森林的效果最好，逻辑回归效果最差，说明训练集可能不是线性可分的。
+In this article, the entire data set is divided into a training set and a test set. I use the daily one-year review cycle data for training and then predict the current day. Using random forest, KNN, SVM and logistic regression for testing, random forest has the best effect, and logistic regression has the worst effect, indicating that the training set may not be linearly separable.
 
-## 
+
 
 
 
